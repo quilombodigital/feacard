@@ -77,7 +77,7 @@ namespace FeaCard
             this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.defButton);
             this.Name = "Form1";
-            this.Text = "FeaCard 1.0";
+            this.Text = "FeaCard 1.0.0";
             this.ResumeLayout(false);
             this.PerformLayout();
 
