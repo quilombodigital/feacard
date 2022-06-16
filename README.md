@@ -1,6 +1,6 @@
 # feacard
 
-My daughter needed an entrance card generator for the USP FEA Economics course.
+My daughter needed an entrance card generator for the USP FEA Economics course. I already did a label generator fo her (another repository), so I decided to make another one more generic, that could be "programmaed" to do other things by using a config file.
 
 You just need to create a json file with the visual layout (definition) of what you want printed, and a CSV file with all the dynamic data you want to be inserted.
 The app supports to automatically find faces in images and crop correctly the image. This is very usefull because the students are going to send their selfies.
