@@ -7,6 +7,12 @@ The app supports to automatically find faces in images and crop correctly the im
 
 You can download the current version here: [FeaCard Version 1.0.0](https://github.com/quilombodigital/feacard/releases/download/v1.0.0/feacard-1.0.0.zip)
 
+## Instructions:
+* Modify the file **definition.json**
+* Modify the file **data.csv**
+* Execute **FeaCard.exe**
+
+
 
 ![image](https://user-images.githubusercontent.com/874378/173989370-bd975131-6bb2-40a4-a6a3-698e265b337e.png)
 
