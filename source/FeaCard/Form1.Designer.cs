@@ -43,7 +43,7 @@ namespace FeaCard
             this.defButton.Name = "defButton";
             this.defButton.Size = new System.Drawing.Size(278, 48);
             this.defButton.TabIndex = 2;
-            this.defButton.Text = "GENERATE PDF";
+            this.defButton.Text = "Choose Definition File";
             this.defButton.UseVisualStyleBackColor = false;
             this.defButton.Click += new System.EventHandler(this.defButton_Click);
             // 
