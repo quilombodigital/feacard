@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Windows.Forms;
 
@@ -38,6 +39,11 @@ namespace FeaCard
 
                     var state = new DefinitionState();
                     state.directory = Directory.GetParent(definitionFile).FullName;
+
+                    state.downloadFolder = Path.Combine(state.directory, "downloads");
+                    if (Directory.Exists(state.downloadFolder))
+                        Directory.Delete(state.downloadFolder, true);
+                    Directory.CreateDirectory(state.downloadFolder);
 
                     try
                     {
@@ -178,6 +184,34 @@ namespace FeaCard
                 {
                     case ElementType.IMAGE:
                         var textCheck = fieldCheck(state, element.data.Trim());
+
+                        if (textCheck.text.Contains("http"))
+                        {
+                            textCheck.text = textCheck.text.Substring(textCheck.text.IndexOf("http"));
+                            if (textCheck.text.Contains("drive.google"))
+                            {
+                                textCheck.text = textCheck.text.Replace("open?", "uc?") + "&export=download";
+                            }
+                            try
+                            {
+                                var downloadFile = Path.Combine(state.downloadFolder, Path.GetRandomFileName());
+                                statusLabel.Text = "DOWNLOADING IMAGE " + state.cvsDataIndex;
+                                statusLabel.Refresh();
+                                using (WebClient client = new WebClient())
+                                {
+                                    client.DownloadFile(new Uri(textCheck.text), downloadFile);
+                                    textCheck.text = downloadFile;
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                textCheck.text = "";
+                            }
+                        }
+
+                        if (string.IsNullOrEmpty(textCheck.text.Trim()))
+                            return;
+
                         var filename = Path.Combine(state.directory, textCheck.text);
                         XImage logoImage;
                         if (element.face)
@@ -208,7 +242,8 @@ namespace FeaCard
 
                         var textCheck2 = fieldCheck(state, element.data.Trim());
 
-                        var labelFont = new XFont(element.font, element.size, element.style);
+                        XPdfFontOptions options = new XPdfFontOptions(PdfFontEncoding.Unicode);
+                        var labelFont = new XFont(element.font, element.size, element.style, options);
                         var align = element.align == TextAlign.LEFT ? XStringFormats.BottomLeft : (element.align == TextAlign.CENTER ? XStringFormats.BottomCenter : XStringFormats.BottomRight);
                         gfx.DrawString(textCheck2.text, labelFont, new XSolidBrush(convertColor(element.color)), labelPoint, align);
                         break;
@@ -339,6 +374,7 @@ namespace FeaCard
         public int cvsDataIndex;
         public bool finished;
         public string directory;
+        public string downloadFolder;
     }
 
     public class Definition

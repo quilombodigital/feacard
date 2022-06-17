@@ -23,8 +23,8 @@
 					{ "type":"TEXT", "data":"<NAME>", "x":12, "y":39.6, "font":"Arial", "size":7},
 					{ "type":"TEXT", "data":"<CLASS>", "x":27, "y":45.5, "font":"Arial", "size":7},
 					{ "type":"TEXT", "data":"<ID>", "x":9, "y":51.2, "font":"Arial", "size":7},
-					{ "type":"TEXT", "data":"<BIRTH>", "x":45, "y":51.2, "font":"Arial", "size":7},
-					{ "type":"TEXT", "data":"<EXPIRATION>", "x":76, "y":51.2, "font":"Arial", "size":7}
+					{ "type":"TEXT", "data":"<BIRTH>", "x":43.5, "y":51.2, "font":"Arial", "size":7},
+					{ "type":"TEXT", "data":"<EXPIRATION>", "x":73, "y":51.2, "font":"Arial", "size":7}
 				]
 		},
 		{
@@ -37,3 +37,5 @@
 		}
 	]
 }
+
+
