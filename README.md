@@ -5,9 +5,9 @@ My daughter needed an entrance card generator for the USP FEA Economics course. 
 You just need to create a json file with the visual layout (definition) of what you want printed, and a CSV file with all the dynamic data you want to be inserted.
 The app supports to automatically find faces in images and crop correctly the image. This is very usefull because the students are going to send their selfies.
 
-You can download the current version here: [FeaCard Version 1.0.0](https://github.com/quilombodigital/feacard/releases/download/v1.0.0/feacard-1.0.0.zip)
+You can download the current version here: [FeaCard Version 1.0.1](https://github.com/quilombodigital/feacard/releases/download/v1.0.1/feacard-1.0.1.zip)
 
-You can download the examples here: [Examples](https://github.com/quilombodigital/feacard/releases/download/v1.0.0/feacard-examples-1.0.0.zip)
+You can download the examples here: [Examples](https://github.com/quilombodigital/feacard/releases/download/v1.0.1/feacard-examples-1.0.1.zip)
 
 ## Instructions:
 * Modify the file **definition.json**
