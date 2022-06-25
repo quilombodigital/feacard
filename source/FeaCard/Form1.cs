@@ -193,10 +193,9 @@ namespace FeaCard
 
                         if (textCheck.text.Contains("http"))
                         {
-                            //Thread.Sleep(2000);
-                            //var referenceCheck = fieldCheck(state, element.reference.Trim());
+                            var reference = element.reference.Trim();
 
-                            var idFile = state.csvData[state.cvsDataIndex]["ID"] + ".jpeg";
+                            var idFile = state.csvData[state.cvsDataIndex][reference] + ".jpeg";
                             var convertedFile = Path.Combine(state.downloadFolder, idFile);
                             if (File.Exists(convertedFile))
                             {
@@ -263,7 +262,7 @@ namespace FeaCard
                                                 imageFactory.Load(downloadStream)
                                                     .AutoRotate()
                                                     .Format(new JpegFormat())
-                                                    .Quality(100);
+                                                    .Quality(90);
 
                                                 imageFactory.Save(convertedStream);
                                             }

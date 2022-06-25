@@ -19,7 +19,7 @@
 			"name":"CARD_FRONT", 
 			"elements":[
 					{ "type":"IMAGE", "data":"definition_images/carteirinha85x55_front.png", "x":0, "y":0, "width":85, "height":55},
-					{ "type":"IMAGE", "data":"data_images/<PHOTO>", "x":64.11, "y":0, "width":20.88, "height":27.48, "face":true},
+					{ "type":"IMAGE", "data":"data_images/<PHOTO>", "reference":"ID", "x":64.11, "y":0, "width":20.88, "height":27.48, "face":true},
 					{ "type":"TEXT", "data":"<NAME>", "x":12, "y":39.6, "font":"Arial", "size":7},
 					{ "type":"TEXT", "data":"<CLASS>", "x":27, "y":45.5, "font":"Arial", "size":7},
 					{ "type":"TEXT", "data":"<ID>", "x":9, "y":51.2, "font":"Arial", "size":7},
