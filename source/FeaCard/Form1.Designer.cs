@@ -32,6 +32,7 @@ namespace FeaCard
             this.defButton = new System.Windows.Forms.Button();
             this.statusLabel = new System.Windows.Forms.Label();
             this.filebox = new System.Windows.Forms.TextBox();
+            this.errorBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // defButton
@@ -64,15 +65,26 @@ namespace FeaCard
             this.filebox.Multiline = true;
             this.filebox.Name = "filebox";
             this.filebox.ReadOnly = true;
-            this.filebox.Size = new System.Drawing.Size(278, 79);
+            this.filebox.Size = new System.Drawing.Size(462, 79);
             this.filebox.TabIndex = 5;
+            // 
+            // errorBox
+            // 
+            this.errorBox.Location = new System.Drawing.Point(12, 194);
+            this.errorBox.Multiline = true;
+            this.errorBox.Name = "errorBox";
+            this.errorBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.errorBox.Size = new System.Drawing.Size(462, 113);
+            this.errorBox.TabIndex = 6;
+            this.errorBox.WordWrap = false;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.ClientSize = new System.Drawing.Size(302, 188);
+            this.ClientSize = new System.Drawing.Size(486, 319);
+            this.Controls.Add(this.errorBox);
             this.Controls.Add(this.filebox);
             this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.defButton);
@@ -87,6 +99,7 @@ namespace FeaCard
         private System.Windows.Forms.Button defButton;
         private System.Windows.Forms.Label statusLabel;
         private System.Windows.Forms.TextBox filebox;
+        private System.Windows.Forms.TextBox errorBox;
     }
 }
 

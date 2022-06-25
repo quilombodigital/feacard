@@ -1,5 +1,7 @@
 ﻿using Csv;
 using FaceONNX;
+using ImageProcessor;
+using ImageProcessor.Imaging.Formats;
 using Newtonsoft.Json;
 using PdfSharpCore.Drawing;
 using PdfSharpCore.Pdf;
@@ -7,10 +9,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace FeaCard
@@ -41,9 +45,10 @@ namespace FeaCard
                     state.directory = Directory.GetParent(definitionFile).FullName;
 
                     state.downloadFolder = Path.Combine(state.directory, "downloads");
-                    if (Directory.Exists(state.downloadFolder))
-                        Directory.Delete(state.downloadFolder, true);
-                    Directory.CreateDirectory(state.downloadFolder);
+                    //if (Directory.Exists(state.downloadFolder))
+                    //Directory.Delete(state.downloadFolder, true);
+                    if (!Directory.Exists(state.downloadFolder))
+                        Directory.CreateDirectory(state.downloadFolder);
 
                     try
                     {
@@ -185,28 +190,99 @@ namespace FeaCard
                     case ElementType.IMAGE:
                         var textCheck = fieldCheck(state, element.data.Trim());
 
+
                         if (textCheck.text.Contains("http"))
                         {
-                            textCheck.text = textCheck.text.Substring(textCheck.text.IndexOf("http"));
-                            if (textCheck.text.Contains("drive.google"))
+                            //Thread.Sleep(2000);
+                            //var referenceCheck = fieldCheck(state, element.reference.Trim());
+
+                            var idFile = state.csvData[state.cvsDataIndex]["ID"] + ".jpeg";
+                            var convertedFile = Path.Combine(state.downloadFolder, idFile);
+                            if (File.Exists(convertedFile))
                             {
-                                textCheck.text = textCheck.text.Replace("open?", "uc?") + "&export=download";
+                                textCheck.text = convertedFile;
                             }
-                            try
+                            else
                             {
-                                var downloadFile = Path.Combine(state.downloadFolder, Path.GetRandomFileName());
-                                statusLabel.Text = "DOWNLOADING IMAGE " + state.cvsDataIndex;
-                                statusLabel.Refresh();
-                                using (WebClient client = new WebClient())
+                                textCheck.text = textCheck.text.Substring(textCheck.text.IndexOf("http"));
+                                if (textCheck.text.Contains("drive.google"))
                                 {
-                                    client.DownloadFile(new Uri(textCheck.text), downloadFile);
-                                    textCheck.text = downloadFile;
+                                    textCheck.text = textCheck.text.Replace("open?", "uc?");// + "&export=download";
                                 }
+                                try
+                                {
+                                    var downloadFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+                                    statusLabel.Text = "DOWNLOADING IMAGE " + state.cvsDataIndex;
+                                    statusLabel.Refresh();
+                                    //using (WebClient client = new WebClient())
+                                    //{
+                                    //    client.DownloadFile(new Uri(textCheck.text), downloadFile);
+                                    //}
+
+
+                                    ProcessStartInfo start = new ProcessStartInfo();
+                                    start.FileName = "gdown";
+                                    start.Arguments = textCheck.text + " -O \"" + downloadFile + "\"";
+                                    start.UseShellExecute = false;
+                                    start.CreateNoWindow = true;
+                                    start.RedirectStandardOutput = true;
+                                    start.RedirectStandardError = true;
+
+                                    Process process = Process.Start(start);
+                                    Thread thread = new Thread(new ThreadStart(() =>
+                                    {
+                                        using (StreamReader reader = process.StandardOutput)
+                                        {
+                                            string result = reader.ReadToEnd();
+                                            Console.Write(result);
+                                        }
+                                    }));
+                                    thread.IsBackground = true; thread.Start();
+
+                                    var thread2 = new Thread(new ThreadStart(() =>
+                                    {
+                                        using (StreamReader reader = process.StandardError)
+                                        {
+                                            string result = reader.ReadToEnd();
+                                            Console.Write(result);
+                                        }
+                                    }));
+                                    thread2.IsBackground = true; thread2.Start();
+
+                                    process.WaitForExit();
+
+
+
+                                    using (var downloadStream = File.OpenRead(downloadFile))
+                                    {
+                                        using (var convertedStream = File.OpenWrite(convertedFile))
+                                        {
+                                            using (ImageFactory imageFactory = new ImageFactory(preserveExifData: false))
+                                            {
+
+                                                imageFactory.Load(downloadStream)
+                                                    .AutoRotate()
+                                                    .Format(new JpegFormat())
+                                                    .Quality(100);
+
+                                                imageFactory.Save(convertedStream);
+                                            }
+                                        }
+                                    }
+                                    textCheck.text = convertedFile;
+                                }
+                                catch (Exception e)
+                                {
+                                    if (File.Exists(convertedFile))
+                                        File.Delete(convertedFile);
+                                    errorBox.Text = errorBox.Text + "Failed to convert item " + (state.cvsDataIndex + 1) + " for file " + convertedFile+"\r\n";
+                                    errorBox.Refresh();
+                                    textCheck.text = "";
+                                }
+
                             }
-                            catch (Exception e)
-                            {
-                                textCheck.text = "";
-                            }
+
+
                         }
 
                         if (string.IsNullOrEmpty(textCheck.text.Trim()))
@@ -243,6 +319,7 @@ namespace FeaCard
                         var textCheck2 = fieldCheck(state, element.data.Trim());
 
                         XPdfFontOptions options = new XPdfFontOptions(PdfFontEncoding.Unicode);
+
                         var labelFont = new XFont(element.font, element.size, element.style, options);
                         var align = element.align == TextAlign.LEFT ? XStringFormats.BottomLeft : (element.align == TextAlign.CENTER ? XStringFormats.BottomCenter : XStringFormats.BottomRight);
                         gfx.DrawString(textCheck2.text, labelFont, new XSolidBrush(convertColor(element.color)), labelPoint, align);
@@ -420,6 +497,7 @@ namespace FeaCard
     {
         public ElementType type;
         public string data;
+        public string reference = "";
         public double x;
         public double y;
         public double width;
